@@ -44,8 +44,8 @@ def _run_op(op: str, **kwargs):
         if not shutil.which("galvanize"):
             return {"ok": False, "error":
                     "galvanize is not installed in this interpreter and 'galvanize' "
-                    "is not on PATH. Fix:  <hermes-python> -m pip install "
-                    "\"git+https://github.com/jarvis959/galvanize.git\"   (or run: galvanize init)"}
+                    "is not on PATH. Fix:  <hermes-python> -m pip install galvanize"
+                    "   (or run: galvanize init)"}
         cmd = ["galvanize"]
         cmd += {"add": ["add"], "remove": ["remove"], "test": ["test"],
                 "status": ["status"], "list": ["status"]}[op]
