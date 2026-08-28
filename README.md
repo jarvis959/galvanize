@@ -6,11 +6,12 @@ galvanize watches the real world (new mail in an inbox, a file landing in a fold
 
 ## Install
 
-Works on Windows, macOS, and Linux (Python 3.10+). One command:
+Works on Windows, macOS, and Linux (Python 3.10+). No cloning needed — one command installs straight from GitHub:
 
 ```bash
-pipx install galvanize        # or: uv tool install galvanize
-                              # or: pip install galvanize
+pipx install "git+https://github.com/jarvis959/galvanize.git"
+# or: uv tool install --from "git+https://github.com/jarvis959/galvanize.git" galvanize
+# or: pip install git+https://github.com/jarvis959/galvanize.git
 ```
 
 Then run setup once:

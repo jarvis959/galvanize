@@ -176,6 +176,27 @@ def _hermes_interpreter() -> "Path | None":
     return None
 
 
+def _install_spec_for_pip() -> str:
+    """What to hand pip so the Hermes interpreter gets the SAME galvanize
+    this process came from: git URL if installed from git (direct_url.json,
+    written by pipx / pip install git+https), else a PyPI version pin."""
+    try:
+        from importlib.metadata import distribution
+        raw = distribution("galvanize").read_text("direct_url.json")
+        if raw:
+            import json as _json
+            info = _json.loads(raw)
+            url = info.get("url", "")
+            if url.startswith(("http://", "https://", "git+")):
+                vcs = (info.get("vcs_info") or {}).get("commit_id", "")
+                if not url.startswith("git+"):
+                    url = f"git+{url}"
+                return f"{url}@{vcs}" if vcs else url
+    except Exception:
+        pass
+    return f"galvanize=={__version__}"
+
+
 def _ensure_galvanize_in_hermes_venv(quiet: bool = False) -> None:
     """pip-install galvanize into the Hermes interpreter so the plugin's
     in-process path works (pipx/uvx/standalone installs are invisible to it)."""
@@ -194,8 +215,9 @@ def _ensure_galvanize_in_hermes_venv(quiet: bool = False) -> None:
             return
     except Exception:
         return
-    # Not importable there -> install. Source = our own package (dev checkout
-    # as editable, otherwise the published version).
+    # Not importable there -> install from the SAME source this copy came
+    # from. dev checkout -> editable path; pipx/git+https install -> the
+    # recorded git URL (PyPI may not have us yet); PyPI wheel -> version pin.
     src = Path(__file__).resolve().parents[1]
     dev_checkout = (src / "pyproject.toml").exists() and (src / "galvanize" / "__init__.py").exists()
     cmd = [str(interp), "-m", "pip", "install", "--quiet", "--disable-pip-version-check"]
@@ -204,8 +226,9 @@ def _ensure_galvanize_in_hermes_venv(quiet: bool = False) -> None:
         cmd += ["-e", str(src)]
         target_display = f"-e {src}"
     else:
-        cmd.append(f"galvanize=={__version__}")
-        target_display = f"galvanize=={__version__}"
+        install_spec = _install_spec_for_pip()
+        cmd.append(install_spec)
+        target_display = install_spec
     if not quiet:
         _print_lines(["Installing galvanize into the Hermes interpreter (plugin needs it)..."])
     try:
