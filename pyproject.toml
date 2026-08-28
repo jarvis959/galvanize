@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "galvanize"
+version = "0.2.0"
+description = "Event-driven activation points for AI agents: wake a fresh Hermes (or any CLI agent) session when something happens."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Jarvis Lai" }]
+keywords = ["agents", "webhooks", "triggers", "hermes", "automation", "events"]
+dependencies = [
+    "PyYAML>=6.0,<7",
+    "watchdog>=4.0,<7",
+    "imap-tools>=1.10,<2",
+    "keyring>=24,<26",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Testing",
+    "Topic :: System :: Monitoring",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.urls]
+Homepage = "https://github.com/jarvis959/galvanize"
+
+[project.scripts]
+galvanize = "galvanize.cli:main"
+
+[tool.hatch.build.targets.wheel.force-include]
+"plugins/hermes" = "galvanize/_plugins/galvanize"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

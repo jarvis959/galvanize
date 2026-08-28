@@ -1,0 +1,13 @@
+{
+  "name": "galvanize",
+  "label": "Triggers",
+  "description": "Event triggers that wake agent sessions — watch status, last fire, test-fire, enable/disable, remove",
+  "icon": "Zap",
+  "version": "0.2.0",
+  "tab": {
+    "path": "/triggers",
+    "position": "after:cron"
+  },
+  "entry": "dist/index.js",
+  "api": "plugin_api.py"
+}

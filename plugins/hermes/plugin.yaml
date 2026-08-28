@@ -1,0 +1,11 @@
+name: galvanize
+version: "0.2.0"
+description: "Event-driven triggers for Hermes: wake a fresh agent session when files land, webhooks fire, or events are emitted. Gives the agent trigger_add/list/remove/test/status tools so 'trigger me when X' never silently becomes a cron poller."
+author: Jarvis Lai
+kind: standalone
+provides_tools:
+  - trigger_add
+  - trigger_list
+  - trigger_remove
+  - trigger_test
+  - trigger_status

@@ -1,0 +1,10 @@
+services:
+  greenmail:
+    image: greenmail/standalone:2.0.17
+    ports:
+      - "3025:3025"    # SMTP
+      - "3143:3143"    # IMAP
+      - "3993:3993"    # IMAPS
+    environment:
+      - GREENMAIL_USERS=trigger@example.com:secret:Trigger,user@example.com:secret:Sender
+      - GREENMAIL_USE_SSL=false
