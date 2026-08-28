@@ -53,8 +53,16 @@ def _ensure_greenmail():
         return
     import subprocess
     comp = Path(__file__).parent / "greenmail" / "docker-compose.yml"
-    subprocess.run(["docker", "compose", "-f", str(comp), "up", "-d"],
-                   check=True, capture_output=True, timeout=300)
+    # Any bring-up failure (image pull blocked, no compose plugin, runner
+    # Docker policy) means "we cannot judge the IMAP contract" -> skip,
+    # same verdict as Docker being unreachable. CI runners ship a live
+    # daemon but no guarantee of pulling greenmail; don't fail the matrix.
+    try:
+        subprocess.run(["docker", "compose", "-f", str(comp), "up", "-d"],
+                       check=True, capture_output=True, timeout=300)
+    except Exception as e:
+        detail = (getattr(e, "stderr", b"") or b"").decode("utf-8", "replace")
+        pytest.skip(f"greenmail could not start: {detail.strip()[-200:] or e}")
     deadline = time.time() + 90
     while time.time() < deadline:
         if _greenmail_up():
