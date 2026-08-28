@@ -1,8 +1,8 @@
 ![galvanize: wake your agents when the world moves](assets/galvanize-infographic.png)
 
-**Wake your AI agent when something happens, not on a timer.**
+**Wake your AI agent when something happens.**
 
-galvanize watches the real world (new mail in an inbox, a file landing in a folder, a git commit, a webhook call, an event from a script) and wakes a fresh AI agent session the moment one of those things occurs, with a prompt you wrote. Until now, the only event an agent could see was the clock: "trigger me when X" always became an hourly cron poll, because polling was the only surface the agent had. galvanize puts real event triggers directly into the agent's own tool list (native plugin for Hermes, MCP server for Claude Code and Codex), so when you say "wake me when resumes land", the agent wires an actual push trigger instead. Passwords go to your OS keyring, each trigger starts watching in seconds, and results arrive wherever you asked (Telegram, Discord, or just the log).
+galvanize watches the real world (new mail, a file landing in a folder, a git commit, a webhook call, an event from a script) and starts a fresh AI agent session with a prompt you wrote the moment one occurs. Event triggers sit directly in the agent's own tool list (native plugin for Hermes, MCP server for Claude Code and Codex), so "wake me when resumes land" wires an actual push trigger. Passwords go to your OS keyring, each trigger starts watching in seconds, and results arrive wherever you asked (Telegram, Discord, or the log).
 
 ## Install
 
@@ -13,7 +13,7 @@ pipx install galvanize        # or: uv tool install galvanize
                               # or: pip install galvanize
 ```
 
-(Prefer the bleeding edge straight from GitHub, no clone needed:
+(Prefer the bleeding edge straight from GitHub:
 `pipx install "git+https://github.com/jarvis959/galvanize.git"`)
 
 Then run setup once:
@@ -36,11 +36,11 @@ galvanize test cad-drops   # inject a synthetic event through the real path
 
 ## Why
 
-Every "trigger me when X" conversation defaults to an hourly cron poller, because polling is the only surface the agent can see. galvanize puts event triggers *in the agent's own tool list*, so when you say "wake me when resumes land", the agent wires a real push trigger instead of a poll job.
+Cron polling is usually the only event surface an agent can see, so "trigger me when X" becomes an hourly poller. galvanize puts event triggers *in the agent's own tool list*, so the agent wires a real push trigger.
 
-- **Fresh sessions, not thread injections.** Each event spawns a clean one-shot run: no context pollution, results delivered where you asked.
+- **Fresh sessions.** Each event spawns a clean one-shot run; results are delivered where you asked.
 - **Management everywhere cron is managed.** Dashboard `/triggers` tab, `/triggers` slash command, `hermes triggers` CLI, agent tools, plus `galvanize status` / `doctor` / `daemon`: all surfaces, one ops core.
-- **Push email that survives real life.** IDLE with 25-min re-arm, UID dedupe, reconnect catch-up, keyring-held credentials, and a `migrate hermes-cron` command that converts your existing email pollers.
+- **Push email.** IMAP IDLE with 25-min re-arm, UID dedupe, reconnect catch-up, keyring-held credentials, and a `migrate hermes-cron` command that converts your existing email pollers.
 - **Zero-inbound-port webhooks.** Optional user-owned Cloudflare Worker relay (`relay/worker.js`): services POST to your URL, your laptop pulls the queue.
 
 ## Working with each harness
@@ -67,7 +67,7 @@ galvanize add folder ~/watch --wake shell --command 'myagent run "{prompt}"'
 
 ## Daily use
 
-Triggers the agent creates itself with its `trigger_add` tool are the primary path; the CLI is the no-agent fallback. Both write the same `~/.galvanize/triggers.yaml`, and the dashboard tab manages what either creates (creation stays conversation-first by design).
+The agent's own `trigger_add` tool is the primary creation path; the CLI is the fallback for use without an agent. Both write the same `~/.galvanize/triggers.yaml`, and the dashboard tab manages what either creates.
 
 ## Development
 
